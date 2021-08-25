@@ -1,4 +1,5 @@
 KB.component('file-upload', function (containerElement, options) {
+    var textFormElement = null;
     var inputFileElement = null;
     var dropzoneElement = null;
     var files = [];
@@ -92,7 +93,10 @@ KB.component('file-upload', function (containerElement, options) {
 
     function uploadFiles() {
         if (files.length > 0) {
-            KB.http.uploadFile(options.url, files[currentFileIndex], options.csrf, onProgress, onComplete, onError, onServerError);
+            const additionalData = textFormElement
+                ? [{'name': textFormElement.name, 'value': textFormElement.value}]
+                : [{}]
+            KB.http.uploadFile(options.url, files[currentFileIndex], options.csrf, onProgress, onComplete, onError, onServerError, additionalData);
         }
     }
 
@@ -203,11 +207,25 @@ KB.component('file-upload', function (containerElement, options) {
         return fileListElement;
     }
 
+    function buildTextInputElement() {
+        return KB.dom('input')
+            .attr('id', 'file-title')
+            .attr('type', 'text')
+            .attr('name', 'title')
+            .attr('value', '')
+            .attr('placeholder', 'タイトルを入力してください')
+            .build();
+    }
+
     this.render = function () {
         KB.on('modal.submit', onSubmit);
         KB.on('modal.close', function () {
            KB.removeListener('modal.submit', onSubmit);
         });
+
+        // TODO: ここにif分を噛ませたい
+        textFormElement = buildTextInputElement();
+        containerElement.appendChild(textFormElement);
 
         inputFileElement = buildFileInputElement();
         dropzoneElement = buildDropzoneElement();

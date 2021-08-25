@@ -1,6 +1,7 @@
 <div class="page-header">
     <h2><?= t('Attach a document') ?></h2>
 </div>
+<?= $this->form->text('title',[],[],array('autofocus','required','maxlength="191"')) ?>
 
 <?= $this->app->component('file-upload', array(
     'csrf'              => $this->app->getToken()->getReusableCSRFToken(),

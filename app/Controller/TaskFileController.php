@@ -53,6 +53,7 @@ class TaskFileController extends BaseController
     {
         $this->checkReusableCSRFParam();
         $task = $this->getTask();
+        var_dump($this->request->getRawValue('title'));
         $result = $this->taskFileModel->uploadFiles($task['id'], $this->request->getFileInfo('files'));
 
         if ($this->request->isAjax()) {
